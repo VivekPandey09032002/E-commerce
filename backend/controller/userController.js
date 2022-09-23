@@ -121,3 +121,123 @@ exports.resetPassword = catchAsyncError(async (req, res, next) => {
 
     sendToken(user,200,res)
 });
+
+
+//get user detail
+exports.getUserDetails = catchAsyncError(async (req, res, next) => {
+    //always 
+    const user = await User.findById(req.user.id);
+
+    res.status(200).json({
+        success : true,
+        user
+    })
+});
+
+//change password
+exports.updateUserPassword = catchAsyncError(async (req, res, next) => {
+    //always 
+    const user = await User.findById(req.user.id).select("+password");
+
+    const isPasswordMatched =  await  user.comparePassword(req.body.oldPassword);
+    if(!isPasswordMatched){
+        return next(new ErrorHandler("old password is incorrect",400))
+    }
+    if(req.body.newPassword !== req.body.confirmPassword){
+        return next(new ErrorHandler("password doens't match",400))        
+    }
+    user.password = req.body.newPassword
+    await user.save()
+    sendToken(user,200,res)
+
+});
+
+
+//update user profile
+exports.updateUserProfile = catchAsyncError(async (req, res, next) => {
+    if(!req.body.name || !req.body.email){
+        return next(new ErrorHandler("All fields required to update",400))
+    }
+    const newUserData = {
+        name : req.body.name,
+        email : req.body.email
+    }
+    // add later avatar
+
+    const user = await User.findByIdAndUpdate(req.user.id,newUserData,{
+        new : true,
+        runValidators : true
+    });
+
+    res.status(200).json({
+        success : true,
+    })
+
+});
+
+//get all users (admin wants to see)
+exports.getAllUsers = catchAsyncError(async (req, res, next) => {
+
+    const users = await User.find()
+
+    res.status(200).json({
+        success : true,
+        users
+    })
+
+});
+
+//get single user (admin want to see)
+//get all users
+exports.getSingleUser = catchAsyncError(async (req, res, next) => {
+
+    const user = await User.findById({_id : req.params.id})
+    if(!user){
+        return next(new ErrorHandler(`User doesn't exist ${req.params.id}`),400)
+    }
+
+    res.status(200).json({
+        success : true,
+        user
+    })
+
+});
+
+
+// update user detail by admin
+exports.updateUserRole = catchAsyncError(async (req, res, next) => {
+    if(!req.body.name || !req.body.email || !req.body.role){
+       return next(new ErrorHandler("All fields required to update",400))
+    }
+    const newUserData = {
+        name : req.body.name,
+        email : req.body.email,
+        role : req.body.role
+    }
+    // add later avatar
+
+    const user = await User.findByIdAndUpdate(req.params.id,newUserData,{
+        new : true,
+        runValidators : true
+    });
+    await user.save()
+    res.status(200).json({
+        success : true,
+    })
+
+});
+
+// delete user detail by admin
+exports.deleteUser = catchAsyncError(async (req, res, next) => {
+    //we will remove cloud later
+    const user = await User.findById(req.params.id);
+    if(!user){
+        return next(new ErrorHandler(`user doesn't exist with ${req.params.id}`,400))
+    }
+    await user.remove();
+    res.status(200).json({
+        success : true,
+        message : "user delete successfully"
+    })
+
+});

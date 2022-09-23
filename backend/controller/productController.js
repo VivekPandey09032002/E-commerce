@@ -78,3 +78,18 @@ exports.deleteProduct = catchAsyncError(async (req, res, next) => {
     message: "product delete successfully",
   });
 });
+
+
+//create and update review
+exports.deleteProduct = catchAsyncError(async (req, res, next) => {
+  const {rating,comment,productId} = req.body
+  const review = {
+    user : req.user._id,
+    name : req.user.name,
+    rating : Number(rating),
+    comment
+  }
+
+  let product = await Product.findById(productId);
+
+});
