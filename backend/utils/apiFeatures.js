@@ -3,6 +3,7 @@ class ApiFeatures {
         this.query = query
         this.queryStr = queryStr
     }
+    //this.query => Poduct query object
     search(){
         const keyword = this.queryStr.keyword ? {
             name : {
