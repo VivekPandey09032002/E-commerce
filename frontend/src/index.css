@@ -1,0 +1,22 @@
+*,
+*::before,
+*::after{
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+}
+
+a {
+    text-decoration: none;
+    color: black;
+}
+:root{
+    --clr-bg : rgb(235, 235, 235);
+}
+
+body {
+    font-family: 'Work Sans',sans-serif;
+    font-weight: 500;;
+    background-color: var(--clr-bg);
+}
+

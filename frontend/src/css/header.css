@@ -1,0 +1,63 @@
+.header-note {
+  background-color: black;
+  position: sticky;
+}
+
+.header-note > p {
+  text-align: center;
+  font-size: 11px;
+  letter-spacing: 1.65px;
+  color: #fff;
+  opacity: 1;
+  padding: 12px 0;
+}
+
+.nav-bar{
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin : 8px 10px;
+  font-size: 20px;
+}
+
+.cursor {
+  cursor: pointer;
+}
+
+.nav-bar > p {
+  font-size: 24px;
+  text-align: center;
+  font-weight: bold;
+}
+
+.group-icon {
+  display: flex;
+  justify-content: space-around;
+  flex-basis: 120px;
+  align-items: center;
+  font-size: 20px;
+}
+
+
+.ham {
+  position: absolute;
+  width: 100%;
+  top: 30px;
+  height: 200px;
+  display: flex;
+  flex-direction: column;
+  gap : 1em;
+  text-align: center;
+}
+
+.ham > a {
+  margin-top: 20px;
+}
+
+.ham > a:hover,
+.ham > a:active {
+  color: rgb(83, 81, 81);
+}
+
+
