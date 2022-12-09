@@ -6,7 +6,8 @@ import {
   AiOutlineShoppingCart,
   AiOutlineUser,
 } from "react-icons/ai";
-function Header() {
+import axios from "axios";
+function Header({ searchStr, setSearchStr }) {
   return (
     <Box bg="bg.200">
       <Flex alignItems="center" justifyContent="space-between">
@@ -26,16 +27,19 @@ function Header() {
           </Text>
         </Flex>
         {/* search */}
-        <Flex className="hidden" display={{md : "flex"}} >
+        <Flex display={["none", "none", "flex"]} flex="0 3 420px">
           <Input
             type="text"
             borderRadius="none"
             bg="white"
             borderStartRadius={3}
-            w={390}
             h={14}
             placeholder="Search...."
             fontSize="1.8rem"
+            value={searchStr}
+            onChange={(e) => {
+              setSearchStr(e.target.value);
+            }}
           />
           <Icon
             as={AiOutlineSearch}
@@ -58,6 +62,24 @@ function Header() {
           </Flex>
         </Box>
       </Flex>
+      <Box p={3} paddingTop={0} display={["flex", "none"]}>
+        <Input
+          type="text"
+          borderRadius="none"
+          bg="white"
+          borderStartRadius={3}
+          h={14}
+          placeholder="Search...."
+          fontSize="1.8rem"
+        />
+        <Icon
+          as={AiOutlineSearch}
+          bg="search.100"
+          h={14}
+          w={14}
+          borderEndRadius={3}
+        />
+      </Box>
     </Box>
   );
 }

@@ -1,8 +1,9 @@
+import { Box } from '@chakra-ui/react'
 import React from 'react'
 
 function Footer() {
   return (
-    <div>Footer</div>
+    <Box  bg="red">Footer</Box>
   )
 }
 

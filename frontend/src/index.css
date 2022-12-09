@@ -6,6 +6,11 @@
 
 html{
   font-size: 62.5%;
+  min-height: 100%;
+}
+
+body{
+  height: 100%;
 }
 
 a{
@@ -13,9 +18,6 @@ a{
   color: black;
 }
 
-.hidden{
-  display: none;
-}
 
 /**********   header  *********/
 .inline-text{
