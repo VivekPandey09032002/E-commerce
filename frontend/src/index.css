@@ -1,22 +1,29 @@
 *,
 *::before,
-*::after{
-    box-sizing: border-box;
-    padding: 0;
-    margin: 0;
+*::after {
+  box-sizing: border-box;
 }
 
-a {
-    text-decoration: none;
-    color: black;
-}
-:root{
-    --clr-bg : rgb(235, 235, 235);
+html{
+  font-size: 62.5%;
 }
 
-body {
-    font-family: 'Work Sans',sans-serif;
-    font-weight: 500;;
-    background-color: var(--clr-bg);
+a{
+  text-decoration: none;
+  color: black;
 }
+
+.hidden{
+  display: none;
+}
+
+/**********   header  *********/
+.inline-text{
+  font-size: 1.5rem;
+  color: white;
+  margin-right: 3px;
+}
+
+/**********   header  *********/
+
 
