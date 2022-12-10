@@ -1,13 +1,28 @@
 import React from "react";
-import { Box, Flex, Icon, Image, Input, Link, Text } from "@chakra-ui/react";
+import {
+  Box,
+  Flex,
+  Icon,
+  IconButton,
+  Image,
+  Input,
+  Text,
+  useColorMode,
+} from "@chakra-ui/react";
 import MyDrawer from "./MyDrawer";
 import {
   AiOutlineSearch,
   AiOutlineShoppingCart,
   AiOutlineUser,
 } from "react-icons/ai";
-import axios from "axios";
-function Header({ searchStr, setSearchStr }) {
+
+import { FaSun, FaMoon } from "react-icons/fa";
+
+import { Link } from "react-router-dom";
+
+function Header({ myProducts, setMyProductsState }) {
+  let { searchStr } = myProducts;
+  const { colorMode, toggleColorMode } = useColorMode();
   return (
     <Box bg="bg.200">
       <Flex alignItems="center" justifyContent="space-between">
@@ -31,14 +46,19 @@ function Header({ searchStr, setSearchStr }) {
           <Input
             type="text"
             borderRadius="none"
-            bg="white"
+            colorScheme="gray"
+            color="white"
             borderStartRadius={3}
             h={14}
+            value={searchStr}
             placeholder="Search...."
             fontSize="1.8rem"
-            value={searchStr}
+            fontWeight="bold"
             onChange={(e) => {
-              setSearchStr(e.target.value);
+              setMyProductsState({
+                type: "SEARCH_STR",
+                payload: e.target.value,
+              });
             }}
           />
           <Icon
@@ -53,24 +73,43 @@ function Header({ searchStr, setSearchStr }) {
         <Box>
           <Flex alignItems="center" paddingTop={2}>
             <span className="inline-text">Sign in&rarr;</span>
-            <Link href="#" fontSize="3.2rem" color="white" mr={3}>
-              <Icon as={AiOutlineUser} />
+
+            <Link to="/login">
+              <Icon as={AiOutlineUser} fontSize="3.2rem" color="white" mr={3} />
             </Link>
-            <Link href="#" fontSize="3.2rem" color="white" mr={5}>
-              <Icon as={AiOutlineShoppingCart} />
+            <Link to="#">
+              <Icon
+                as={AiOutlineShoppingCart}
+                fontSize="3.2rem"
+                color="white"
+                mr={5}
+              />
             </Link>
+            <IconButton
+              icon={colorMode === "dark" ? <FaMoon /> : <FaSun />}
+              isRound={true}
+              size="lg"
+              mr={2}
+              mt={-1}
+              onClick={toggleColorMode}
+              position="absolute"
+              top ={ {base : "100px" , md : "60px"}}
+              right="8px"
+            />
           </Flex>
         </Box>
       </Flex>
-      <Box p={3} paddingTop={0} display={["flex", "none"]}>
+      <Box p={3} paddingTop={0} display={["flex", "flex", "none"]}>
         <Input
+          colorScheme="gray"
+          color="white"
           type="text"
           borderRadius="none"
-          bg="white"
           borderStartRadius={3}
           h={14}
           placeholder="Search...."
           fontSize="1.8rem"
+          fontWeight="bold"
         />
         <Icon
           as={AiOutlineSearch}

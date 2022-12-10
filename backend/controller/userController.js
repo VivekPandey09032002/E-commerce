@@ -7,15 +7,12 @@ const crypto = require("crypto")
 // register a user
 
 exports.registerUser = catchAsyncError(async (req, res, next) => {
-    const {name,email,password} = req.body
+    const {name,email,password, avatar} = req.body
     // const isvalid = await User.findOne({email})
     // if(isvalid){
     //     return next(new ErrorHandler("email already exists",400))
     // }
-    const user = await User.create({name,email,password,avatar : {
-        public_id : "this is a sample it",
-        url : "profile pic url"
-    }})
+    const user = await User.create({name,email,password,avatar})
 
     sendToken(user,201,res)
 
