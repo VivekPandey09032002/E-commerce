@@ -9,9 +9,12 @@ import Register from "./pages/Register";
 import { Routes, Route } from "react-router-dom";
 import { useEffect, useReducer } from "react";
 import axios from "axios";
-import {myProductsReducer, myUsersReducer} from "./utils/reducer";
+import { myProductsReducer } from "./utils/reducer";
 
 import { VStack } from "@chakra-ui/react";
+
+import { getUser } from "./utils/UserLogic";
+import React, { useState } from "react";
 
 const initialProducts = {
   products: [],
@@ -21,19 +24,14 @@ const initialProducts = {
   pages: 1,
 };
 
-const initialUsers = {
-  error : "",
-  email : "",
-  password : "",
-  name : "",
-  avatar : {},
-  isLoading : false,
-  user : {}
-}
-
 function App() {
-  const [productsState, dispatchState] = useReducer(myProductsReducer, initialProducts);
-  const [userState, dispatchUser] = useReducer(myUsersReducer, initialUsers);
+  console.log("hello app");
+  const [productsState, dispatchState] = useReducer(myProductsReducer,initialProducts);
+  const [userDetail, setUserDetail] = useState({});
+
+  useEffect(() => {
+    getUser(setUserDetail);
+  }, []);
 
   useEffect(() => {
     const baseUrl = "http://localhost:4000/api/v1/products";
@@ -42,13 +40,17 @@ function App() {
       url += "?keyword=" + productsState.searchStr;
     }
     axios.get(url).then((res) => {
-      dispatchState({ type: "NEW_PRODUCTS", payload: res.data.products });
+      dispatchState({ type: "GET_PRODUCTS", payload: res.data.products });
     });
   }, [productsState.searchStr]);
 
   return (
     <VStack alignItems="stretch">
-      <Header myProducts={productsState} setMyProductsState={dispatchState} />
+      <Header
+        searchStr={productsState.searchStr}
+        setMyProductsState={dispatchState}
+        name={userDetail.name}
+      />
       <Routes>
         <Route exact path="/about" element={<About />}></Route>
         <Route exact path="/contact" element={<Contact />}></Route>
@@ -57,8 +59,18 @@ function App() {
           path="/"
           element={<Products myProducts={productsState} />}
         ></Route>
-        <Route exact path="/login" element={<Login myUser={userState} setMyUserState={dispatchUser} />}></Route>
-        <Route exact path="/register" element={<Register myUser={userState} setMyUserState={dispatchUser} />}></Route>
+        <Route
+          exact
+          path="/login"
+          element={<Login setUserDetail={setUserDetail} />}
+        ></Route>
+        <Route
+          exact
+          path="/register"
+          element={
+            <Register  />
+          }
+        ></Route>
       </Routes>
 
       <Footer />

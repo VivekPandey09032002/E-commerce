@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import Cookies from "js-cookie";
+
 import {
   FormControl,
   FormLabel,
@@ -15,28 +15,20 @@ import {
 
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { useEffect } from "react";
 
-function Login({ myUser, setMyUserState }) {
-  const { error, email, password, isLoading } = myUser;
+function Login({ setUserDetail }) {
+  console.log('login')
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [isLoading, setLoading] = useState("");
+  const [error, setError] = useState("");
 
   const navigate = useNavigate();
   const toast = useToast();
 
-  useEffect(() => {
-    const token = Cookies.get("access_token");
-    if (token) {
-      navigate("/");
-    }
-  }, []);
-
   const handleSubmit = (event) => {
     event.preventDefault();
-    setMyUserState({
-      type: "SET_PAYLOAD",
-      payload: true,
-      name: "isLoading",
-    });
+    setLoading(true);
 
     axios
       .post(
@@ -51,32 +43,9 @@ function Login({ myUser, setMyUserState }) {
         }
       )
       .then((res) => {
-        Cookies.set("access_token", res.data.token);
-        setMyUserState({
-          type: "SET_PAYLOAD",
-          payload: false,
-          name: "isLoading",
-        });
-        setMyUserState({
-          type: "SET_PAYLOAD",
-          payload: "",
-          name: "email",
-        });
-        setMyUserState({
-          type: "SET_PAYLOAD",
-          payload: "",
-          name: "password",
-        });
-        setMyUserState({
-          type: "SET_PAYLOAD",
-          payload: res.data.user,
-          name: "user",
-        });
-        setMyUserState({
-          type: "SET_PAYLOAD",
-          payload: "",
-          name: "error",
-        });
+        // use if cookie is not working
+        // Cookies.set("access_token", res.data.token);
+        setUserDetail(res.data.user)
         toast({
           title: "Login Success",
           description: "Successfully logged in to account",
@@ -88,26 +57,8 @@ function Login({ myUser, setMyUserState }) {
         navigate("/");
       })
       .catch((err) => {
-        setMyUserState({
-          type: "SET_PAYLOAD",
-          payload: err.response.data.message,
-          name: "error",
-        });
-        setMyUserState({
-          type: "SET_PAYLOAD",
-          payload: false,
-          name: "isLoading",
-        });
-        setMyUserState({
-          type: "SET_PAYLOAD",
-          payload: "",
-          name: "email",
-        });
-        setMyUserState({
-          type: "SET_PAYLOAD",
-          payload: "",
-          name: "password",
-        });
+        setError(err.response.data.message)
+        setLoading(false)
         toast({
           title: "Login Failed",
           description: `${error}`,
@@ -162,13 +113,7 @@ function Login({ myUser, setMyUserState }) {
                 size="lg"
                 fontSize="1.8rem"
                 value={email}
-                onChange={(event) =>
-                  setMyUserState({
-                    type: "SET_PAYLOAD",
-                    payload: event.target.value,
-                    name: "email",
-                  })
-                }
+                onChange={(e) => setEmail(e.target.value)}
               />
             </HStack>
           </FormControl>
@@ -182,13 +127,8 @@ function Login({ myUser, setMyUserState }) {
                 size="lg"
                 fontSize="2rem"
                 value={password}
-                onChange={(event) =>
-                  setMyUserState({
-                    type: "SET_PAYLOAD",
-                    payload: event.target.value,
-                    name: "password",
-                  })
-                }
+                onChange={(e) => setPassword(e.target.value)}
+                
               />
             </HStack>
           </FormControl>

@@ -6,6 +6,7 @@ import {
   IconButton,
   Image,
   Input,
+  LinkBox,
   Text,
   useColorMode,
 } from "@chakra-ui/react";
@@ -20,8 +21,8 @@ import { FaSun, FaMoon } from "react-icons/fa";
 
 import { Link } from "react-router-dom";
 
-function Header({ myProducts, setMyProductsState }) {
-  let { searchStr } = myProducts;
+function Header({ searchStr, setMyProductsState, name }) {
+  console.log("hello header")
   const { colorMode, toggleColorMode } = useColorMode();
   return (
     <Box bg="bg.200">
@@ -37,9 +38,11 @@ function Header({ myProducts, setMyProductsState }) {
             loading="lazy"
             draggable="false"
           />
-          <Text fontSize="2.7rem" color="logo.100" p={1}>
-            E-Cart{" "}
-          </Text>
+          <LinkBox as={Link} to="/">
+            <Text fontSize="2.7rem" color="logo.100" p={1}>
+              E-Cart{" "}
+            </Text>
+          </LinkBox>
         </Flex>
         {/* search */}
         <Flex display={["none", "none", "flex"]} flex="0 3 420px">
@@ -72,7 +75,14 @@ function Header({ myProducts, setMyProductsState }) {
         {/* signIn, Cart */}
         <Box>
           <Flex alignItems="center" paddingTop={2}>
-            <span className="inline-text">Sign in&rarr;</span>
+            {name === undefined ? (
+              <span className="inline-text">Sign in&rarr;</span>
+            ) : (
+              <span className="inline-text">
+                {name.split(" ")[0]}
+                {/* temp */}
+              </span>
+            )}
 
             <Link to="/login">
               <Icon as={AiOutlineUser} fontSize="3.2rem" color="white" mr={3} />
@@ -93,7 +103,7 @@ function Header({ myProducts, setMyProductsState }) {
               mt={-1}
               onClick={toggleColorMode}
               position="absolute"
-              top ={ {base : "100px" , md : "60px"}}
+              top={{ base: "100px", md: "60px" }}
               right="8px"
             />
           </Flex>

@@ -15,21 +15,24 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 
 import { uploadImage } from "../utils/apiCalls";
+import { useState } from "react";
 
-function Register({ myUser, setMyUserState }) {
-  const { error, email, password, name, avatar, isLoading } = myUser;
+function Register() {
+  console.log('register')
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [isLoading, setLoading] = useState("");
+  const [error, setError] = useState("");
+  const [name, setName] = useState("");
+  const [avatar, setAvatar] = useState({});
+  const [isUploadLoading, setIsUploadLoading] = useState();
 
   const navigate = useNavigate();
   const toast = useToast();
 
   const handleSubmit = (event) => {
     event.preventDefault();
-
-    setMyUserState({
-      type: "SET_PAYLOAD",
-      payload: true,
-      name: "isLoading",
-    });
+    setLoading(true);
 
     axios
       .post("http://localhost:4000/api/v1/register", {
@@ -39,21 +42,7 @@ function Register({ myUser, setMyUserState }) {
         avatar: avatar,
       })
       .then((res) => {
-        setMyUserState({
-          type: "SET_PAYLOAD",
-          payload: false,
-          name: "isLoading",
-        });
-        setMyUserState({
-          type: "SET_PAYLOAD",
-          payload: "",
-          name: "email",
-        });
-        setMyUserState({
-          type: "SET_PAYLOAD",
-          payload: "",
-          name: "password",
-        });
+        setLoading(false);
         toast({
           title: "Login Success",
           description: "Successfully logged in to account",
@@ -65,32 +54,9 @@ function Register({ myUser, setMyUserState }) {
         navigate("/login");
       })
       .catch((err) => {
-        setMyUserState({
-          type: "SET_PAYLOAD",
-          payload: err.response.data.message,
-          name: "error",
-        });
-        setMyUserState({
-          type: "SET_PAYLOAD",
-          payload: false,
-          name: "isLoading",
-        });
-        setMyUserState({
-          type: "SET_PAYLOAD",
-          payload: "",
-          name: "email",
-        });
-        setMyUserState({
-          type: "SET_PAYLOAD",
-          payload: "",
-          name: "password",
-        });
-        setMyUserState({
-          type: "SET_PAYLOAD",
-          payload: "",
-          name: "name",
-        });
-
+        console.log(err.response.data.message);
+        setError(err.response.data.message);
+        setLoading(false);
         toast({
           title: "Login Failed",
           description: `${error}`,
@@ -145,13 +111,7 @@ function Register({ myUser, setMyUserState }) {
                 size="lg"
                 fontSize="1.8rem"
                 value={email}
-                onChange={(event) =>
-                  setMyUserState({
-                    type: "SET_PAYLOAD",
-                    payload: event.target.value,
-                    name: "email",
-                  })
-                }
+                onChange={(e) => setEmail(e.target.value)}
               />
             </HStack>
           </FormControl>
@@ -165,13 +125,7 @@ function Register({ myUser, setMyUserState }) {
                 size="lg"
                 fontSize="2rem"
                 value={password}
-                onChange={(event) =>
-                  setMyUserState({
-                    type: "SET_PAYLOAD",
-                    payload: event.target.value,
-                    name: "password",
-                  })
-                }
+                onChange={(e) => setPassword(e.target.value)}
               />
             </HStack>
           </FormControl>
@@ -185,13 +139,7 @@ function Register({ myUser, setMyUserState }) {
                 size="lg"
                 fontSize="2rem"
                 value={name}
-                onChange={(event) =>
-                  setMyUserState({
-                    type: "SET_PAYLOAD",
-                    payload: event.target.value,
-                    name: "name",
-                  })
-                }
+                onChange={(e) => setName(e.target.value)}
               />
             </HStack>
           </FormControl>
@@ -202,16 +150,19 @@ function Register({ myUser, setMyUserState }) {
               <Input
                 type="file"
                 size="lg"
+                variant="filled"
                 onChange={async (e) => {
-                  const avatar = await uploadImage(e.target.files[0]);
-                  console.log(avatar);
-                  setMyUserState({
-                    type: "SET_PAYLOAD",
-                    payload: avatar,
-                    name: "avatar",
-                  });
+                  const avatar = await uploadImage(
+                    e.target.files[0],
+                    setIsUploadLoading
+                  );
+                  setAvatar(avatar)
+                  setIsUploadLoading(false);
                 }}
               />
+              {isUploadLoading && (
+                <CircularProgress isIndeterminate size="24px" color="teal" />
+              )}
             </HStack>
           </FormControl>
 
