@@ -1,136 +1,101 @@
-import React from "react";
 import {
   Box,
+  Button,
   Flex,
-  Icon,
-  IconButton,
   Image,
   Input,
-  LinkBox,
+  InputGroup,
+  InputRightElement,
+  Link,
   Text,
-  useColorMode,
 } from "@chakra-ui/react";
-import MyDrawer from "./MyDrawer";
-import {
-  AiOutlineSearch,
-  AiOutlineShoppingCart,
-  AiOutlineUser,
-} from "react-icons/ai";
+import { FaSearch } from "react-icons/fa";
+import { AiOutlineUser } from "react-icons/ai";
+import React, { useState } from "react";
+import { useMediaQuery } from "@chakra-ui/react";
+import Drawer from "./MyDrawer";
 
-import { FaSun, FaMoon } from "react-icons/fa";
-
-import { Link } from "react-router-dom";
+import {Link as ReactLink} from 'react-router-dom'
 
 function Header({ searchStr, setMyProductsState, name }) {
-  console.log("hello header")
-  const { colorMode, toggleColorMode } = useColorMode();
+  const [isLargerThan690] = useMediaQuery("(min-width: 690px)");
+  const [displaySearch, setDisplaySearch] = useState(false);
   return (
-    <Box bg="bg.200">
-      <Flex alignItems="center" justifyContent="space-between">
-        {/* LeftSide , Drawer, Logo */}
-        <Flex>
-          <MyDrawer />
-          <Image
-            boxSize="50px"
-            objectFit="cover"
-            src="./src/assets/cozgnine.jpg"
-            alt="main website logo"
-            loading="lazy"
-            draggable="false"
-          />
-          <LinkBox as={Link} to="/">
-            <Text fontSize="2.7rem" color="logo.100" p={1}>
-              E-Cart{" "}
-            </Text>
-          </LinkBox>
-        </Flex>
-        {/* search */}
-        <Flex display={["none", "none", "flex"]} flex="0 3 420px">
+    <Flex h="90px" justifyContent="space-between" position="relative">
+      { (displaySearch && !isLargerThan690) && (
+        <InputGroup position="absolute" top="91px" w="90%" marginLeft="5%" >
           <Input
-            type="text"
-            borderRadius="none"
-            colorScheme="gray"
-            color="white"
-            borderStartRadius={3}
-            h={14}
+            placeholder="Search"
+            borderEndRadius="50px"
+            borderStartRadius="50px"
             value={searchStr}
-            placeholder="Search...."
-            fontSize="1.8rem"
-            fontWeight="bold"
-            onChange={(e) => {
-              setMyProductsState({
-                type: "SEARCH_STR",
-                payload: e.target.value,
-              });
-            }}
+            onChange= { (e) => {setMyProductsState({type : "SEARCH_STR" , payloaod : e.target.value})}}
+            bg="logo"
+            zIndex="20"
           />
-          <Icon
-            as={AiOutlineSearch}
-            bg="search.100"
-            h={14}
-            w={14}
-            borderEndRadius={3}
-          />
-        </Flex>
-        {/* signIn, Cart */}
+          <InputRightElement children={<FaSearch color="white" />} />
+        </InputGroup>
+      )}
+      <Flex w="90%" alignItems="center">
+        <Drawer />
         <Box>
-          <Flex alignItems="center" paddingTop={2}>
-            {name === undefined ? (
-              <span className="inline-text">Sign in&rarr;</span>
-            ) : (
-              <span className="inline-text">
-                {name.split(" ")[0]}
-                {/* temp */}
-              </span>
-            )}
-
-            <Link to="/login">
-              <Icon as={AiOutlineUser} fontSize="3.2rem" color="white" mr={3} />
-            </Link>
-            <Link to="#">
-              <Icon
-                as={AiOutlineShoppingCart}
-                fontSize="3.2rem"
-                color="white"
-                mr={5}
-              />
-            </Link>
-            <IconButton
-              icon={colorMode === "dark" ? <FaMoon /> : <FaSun />}
-              isRound={true}
-              size="lg"
-              mr={2}
-              mt={-1}
-              onClick={toggleColorMode}
-              position="absolute"
-              top={{ base: "100px", md: "60px" }}
-              right="8px"
-            />
-          </Flex>
+          <Image
+            src="../src/assets/logo__final.png"
+            h="120px"
+            w="150px"
+            objectFit="cover"
+            ml={-6}
+          />
         </Box>
+        {isLargerThan690 && (
+          <InputGroup flexBasis="368px" ml="8px" size="lg">
+            <Input
+              placeholder="Search"
+              borderEndRadius="50px"
+              borderStartRadius="50px"
+              value={searchStr}
+              onChange= { (e) => {   setMyProductsState({type : "SEARCH_STR" , payload : e.target.value})}}
+            />
+            <InputRightElement children={<FaSearch color="grey" />} />
+          </InputGroup>
+        )}
       </Flex>
-      <Box p={3} paddingTop={0} display={["flex", "flex", "none"]}>
-        <Input
-          colorScheme="gray"
-          color="white"
-          type="text"
-          borderRadius="none"
-          borderStartRadius={3}
-          h={14}
-          placeholder="Search...."
-          fontSize="1.8rem"
-          fontWeight="bold"
-        />
-        <Icon
-          as={AiOutlineSearch}
-          bg="search.100"
-          h={14}
-          w={14}
-          borderEndRadius={3}
-        />
-      </Box>
-    </Box>
+      <Flex alignItems="center" mr="8px">
+        {name && (
+          <Text fontSize="xl" m={3}>
+            {name.split(" ")[0]}
+          </Text>
+        )}
+        {isLargerThan690 ? (
+          <Link as={ReactLink} to="/login">
+          <Button bg="logo" h="48px" borderRadius="45px" p={5} color="white">
+            Sign in
+          </Button>
+          </Link>
+        ) : (
+          <Flex>
+            <Button
+              borderRadius={18}
+              p={1}
+              fontSize="30px"
+              mr="8px"
+              color="search.before"
+              bg="none"
+
+              onClick={ () => { displaySearch ? setDisplaySearch(false) : setDisplaySearch(true)}}
+            >
+              <FaSearch color="grey" />
+            </Button>
+            <Link as={ReactLink} to="/login" bg="logo" borderRadius={18} p={1} fontSize="30px" mr="8px" color="white">
+              <AiOutlineUser />
+            </Link>
+          </Flex>
+        )}
+      </Flex>
+    </Flex>
   );
 }
+
+
 
 export default Header;

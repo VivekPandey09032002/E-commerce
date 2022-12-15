@@ -1,31 +1,25 @@
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
+@import url('https://fonts.googleapis.com/css2?family=Montserrat&display=swap');
+
+
+.right-arrow {
+  position: absolute;
+  top: 40%;
+  right: 0px;
+  font-size: 3rem;
+  color: grey;
+  z-index: 10;
+  cursor: pointer;
+  user-select: none;
 }
 
-html{
-  font-size: 62.5%;
-  min-height: 100%;
+.left-arrow {
+  position: absolute;
+  top: 40%;
+  font-size: 3rem;
+  color: grey;
+  z-index: 10;
+  cursor: pointer;
+  user-select: none;
 }
-
-body{
-  height: 100%;
-}
-
-a{
-  text-decoration: none;
-  color: black;
-}
-
-
-/**********   header  *********/
-.inline-text{
-  font-size: 1.5rem;
-  color: white;
-  margin-right: 3px;
-}
-
-/**********   header  *********/
 
 

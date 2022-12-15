@@ -1,42 +1,40 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Drawer,
   DrawerBody,
-  DrawerFooter,
   DrawerHeader,
   DrawerOverlay,
   DrawerContent,
   DrawerCloseButton,
   useDisclosure,
+  Box,
+  Button,
 } from "@chakra-ui/react";
 
-import { AiOutlineMenu } from "react-icons/ai";
+import { FaBars } from "react-icons/fa";
 import { Icon } from "@chakra-ui/react";
 function MyDrawer() {
   const { isOpen, onOpen, onClose } = useDisclosure();
-
+  let colorMode = 'light'
+  
   return (
-    <>
-      <Icon
-        as={AiOutlineMenu}
-        boxSize="5rem"
-        color="white"
-        onClick={onOpen}
-        p={3}
-      />
-      <Drawer placement="left" onClose={onClose} isOpen={isOpen} size="sm">
+    <Box>
+      <Icon as={FaBars} fontSize="30px" onClick={onOpen} m="8px" />
+      <Drawer placement="left" onClose={onClose} isOpen={isOpen} size="md">
         <DrawerOverlay />
-        <DrawerContent >
+        <DrawerContent>
           <DrawerCloseButton size="lg" />
-          <DrawerHeader borderBottomWidth="2px" fontSize="1.6rem">E-Cart</DrawerHeader>
+          <DrawerHeader borderBottomWidth="2px" fontSize="1.5rem">
+            E-Cart
+          </DrawerHeader>
           <DrawerBody>
-            <p>Some contents...</p>
+
             <p>Some contents...</p>
             <p>Some contents...</p>
           </DrawerBody>
         </DrawerContent>
       </Drawer>
-    </>
+    </Box>
   );
 }
 

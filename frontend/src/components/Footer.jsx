@@ -2,7 +2,6 @@ import { Box } from '@chakra-ui/react'
 import React from 'react'
 
 const Footer = React.memo(({}) => {
-  console.log("footer")
   return (
     <Box  bg="red">Footer</Box>
   )

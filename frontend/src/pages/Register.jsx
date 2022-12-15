@@ -18,7 +18,6 @@ import { uploadImage } from "../utils/apiCalls";
 import { useState } from "react";
 
 function Register() {
-  console.log('register')
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setLoading] = useState("");
