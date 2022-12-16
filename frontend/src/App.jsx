@@ -1,24 +1,22 @@
-import Header from "./components/Header";
-import Footer from "./components/Footer";
-import About from "./pages/About";
-import Contact from "./pages/Contact";
-import Products from "./pages/Home";
-import Login from "./pages/Login";
-import Register from "./pages/Register";
 
-import { Routes, Route } from "react-router-dom";
+
+
+import {  Routes, Route } from "react-router-dom";
 import { useEffect, useReducer } from "react";
 
 import { myProductsReducer } from "./utils/reducer";
 
-import { Button, Container, Flex, useColorMode } from "@chakra-ui/react";
-
 import { getUser, getProducts } from "./utils/UserLogic";
 import React, { useState } from "react";
-import Home from "./pages/Home";
 
-import { MdDarkMode, MdLightMode } from "react-icons/md";
+import Home from "./pages/Home";
+import Footer from "./components/Footer";
+import About from "./pages/About";
+
 import SingleProduct from "./pages/SingleProduct";
+import CartPage from "./pages/CartPage";
+import NavBar from "./components/NavBar";
+import Products from "./pages/Products";
 
 const initialProducts = {
   products: [],
@@ -30,8 +28,6 @@ const initialProducts = {
 };
 
 function App() {
-
-  const { colorMode, toggleColorMode } = useColorMode();
   const [productsState, dispatchState] = useReducer(
     myProductsReducer,
     initialProducts
@@ -39,7 +35,6 @@ function App() {
   const [userDetail, setUserDetail] = useState({});
   const [distinctCategory, setDistinctCategory] = useState([]);
   const [featuredProducts, setFeaturedProducts] = useState([]);
-
 
   useEffect(() => {
     getUser(setUserDetail);
@@ -64,20 +59,52 @@ function App() {
   ]);
 
   return (
-    <Container maxW="1336px" p="10px">
-      <Header
+    <>
+      <NavBar userDetail={userDetail} setUserDetail={setUserDetail} />
+      <Routes>
+        {/* <Route path="/" index element={<Home />} />
+        <Route path="/post" element={<PostPage />} /> */}
+        <Route
+          path="/"
+          element={
+            <Home
+              myProducts={productsState}
+              distinctCategory={distinctCategory}
+              featuredProducts={featuredProducts}
+              setMyProductsState={dispatchState}
+            />
+          }
+        />
+        <Route
+          path="/product/:id"
+          element={<SingleProduct setMyProductsState={dispatchState} />}
+        ></Route>
+        <Route path="/products" element={<Products />} />
+        <Route path="/cart" element={<CartPage />} />
+        <Route path="/about" element={<About />} />
+        <Route path="*" element={<h1>Page Not Found</h1>} />
+      </Routes>
+      <Footer />
+    </>
+  );
+}
+
+{
+  /* <Header
         searchStr={productsState.searchStr}
         setMyProductsState={dispatchState}
         name={userDetail.name}
-      />
-      <Flex justifyContent="flex-end" p={3}>
+      /> */
+}
+{
+  /* <Flex justifyContent="flex-end" p={3}>
         <Button onClick={() => toggleColorMode()}>
           {colorMode === "light" ? <MdDarkMode /> : <MdLightMode />}
         </Button>
       </Flex>
 
       <Routes>
-        <Route exact path="/about" element={<About />}></Route>
+        <Route exact path="/about" element={<About />} />
         <Route exact path="/contact" element={<Contact />}></Route>
         <Route
           exact
@@ -97,12 +124,15 @@ function App() {
           element={<Login setUserDetail={setUserDetail} />}
         ></Route>
         <Route exact path="/register" element={<Register />}></Route>
-        <Route exact path="/product/:id" element={<SingleProduct setMyProductsState={dispatchState}/>}></Route>
+        <Route
+          exact
+          path="/product/:id"
+          element={<SingleProduct setMyProductsState={dispatchState} />}
+        ></Route>
+        <Route exact path="/cart" element={<CartPage />}></Route>
       </Routes>
 
-      <Footer />
-    </Container>
-  );
+      <Footer /> */
 }
 
 export default App;

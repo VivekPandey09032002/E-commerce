@@ -8,10 +8,10 @@ import {
   VStack,
   StackDivider,
   HStack,
-  Spacer,
   useToast,
+  Stack,
 } from "@chakra-ui/react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 import { uploadImage } from "../utils/apiCalls";
@@ -44,20 +44,20 @@ function Register() {
         setLoading(false);
         toast({
           title: "Login Success",
-          description: "Successfully logged in to account",
+          description: "Successfully register to the Account",
           status: "success",
           duration: 2000,
           isClosable: true,
           position: "top",
         });
-        navigate("/login");
+        navigate("/");
       })
       .catch((err) => {
         console.log(err.response.data.message);
         setError(err.response.data.message);
         setLoading(false);
         toast({
-          title: "Login Failed",
+          title: "Registration Failed",
           description: `${error}`,
           status: "error",
           duration: 3000,
@@ -67,122 +67,77 @@ function Register() {
       });
   };
   return (
-    <VStack>
-      <form onSubmit={handleSubmit}>
-        <VStack
-          my="40px"
-          p={8}
-          maxWidth="450px"
-          borderWidth={3}
-          borderRadius={8}
-          boxShadow="lg"
-          alignSelf="center"
-          divider={<StackDivider borderColor="gray.200" />}
-        >
+    <form onSubmit={handleSubmit}>
+      <VStack divider={<StackDivider borderColor="gray.200" />} spacing={4}>
+        <Stack direction={["column", "row"]}>
           <FormControl isRequired>
-            <HStack mb={5}>
-              <Button
-                colorScheme="teal"
-                variant="outline"
-                fontSize="1.8rem"
-                w="45%"
-                h="3.5rem"
-              >
-                <Link to="/login">SignIn</Link>
-              </Button>
-              <Spacer />
-              <Button
-                colorScheme="teal"
-                variant="outline"
-                fontSize="1.8rem"
-                w="45%"
-                h="3.5rem"
-              >
-                <Link to="/register">SignUp</Link>
-              </Button>
-            </HStack>
-
-            <HStack my={3}>
-              <FormLabel fontSize="2rem">Email</FormLabel>
+            <VStack align="flex-start" spacing={0}>
+              <FormLabel>Email</FormLabel>
               <Input
                 type="email"
                 placeholder="Enter your email"
-                size="lg"
-                fontSize="1.8rem"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
-            </HStack>
+            </VStack>
           </FormControl>
-
-          <FormControl isRequired mt={6}>
-            <HStack mb={4}>
-              <FormLabel fontSize="1.8rem">Password</FormLabel>
+          <FormControl isRequired>
+            <VStack align="flex-start" spacing={0}>
+              <FormLabel>Password</FormLabel>
               <Input
                 type="password"
                 placeholder="*******"
-                size="lg"
-                fontSize="2rem"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
-            </HStack>
+            </VStack>
           </FormControl>
+        </Stack>
 
-          <FormControl isRequired mt={6}>
-            <HStack mb={4}>
-              <FormLabel fontSize="1.8rem">Name</FormLabel>
+        <Stack direction={["column", "row"]} className="upload-btn">
+          <FormControl isRequired>
+            <VStack align="flex-start" spacing={0}>
+              <FormLabel>Name</FormLabel>
               <Input
                 type="text"
-                placeholder="vivek"
-                size="lg"
-                fontSize="2rem"
+                placeholder="Enter Your Name..."
                 value={name}
                 onChange={(e) => setName(e.target.value)}
               />
-            </HStack>
+            </VStack>
           </FormControl>
+          <FormControl isRequired>
+            <VStack align="flex-start" spacing={0}>
+              <FormLabel>upload</FormLabel>
 
-          <FormControl isRequired mt={6}>
-            <HStack mb={4}>
-              <FormLabel fontSize="1.8rem">upload</FormLabel>
               <Input
                 type="file"
-                size="lg"
-                variant="filled"
+                id="file"
+                accept="image/*"
                 onChange={async (e) => {
                   const avatar = await uploadImage(
                     e.target.files[0],
                     setIsUploadLoading
                   );
-                  setAvatar(avatar)
+                  setAvatar(avatar);
                   setIsUploadLoading(false);
                 }}
               />
               {isUploadLoading && (
                 <CircularProgress isIndeterminate size="24px" color="teal" />
               )}
-            </HStack>
+            </VStack>
           </FormControl>
-
-          <Button
-            colorScheme="teal"
-            variant="outline"
-            type="submit"
-            width="full"
-            mt={4}
-            h={16}
-            fontSize="1.8rem"
-          >
-            {isLoading ? (
-              <CircularProgress isIndeterminate size="24px" color="teal" />
-            ) : (
-              "Sign In"
-            )}
-          </Button>
-        </VStack>
-      </form>
-    </VStack>
+        </Stack>
+        <Button  variant="primary" type="submit" width="full">
+          {isLoading ? (
+            <CircularProgress isIndeterminate size="24px" color="teal" />
+          ) : (
+            "Sign In"
+          )}
+        </Button>
+      </VStack>
+    </form>
   );
 }
 

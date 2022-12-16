@@ -11,6 +11,7 @@ import {
   HStack,
   Spacer,
   useToast,
+  Stack,
 } from "@chakra-ui/react";
 
 import { Link, useNavigate } from "react-router-dom";
@@ -26,6 +27,7 @@ function Login({ setUserDetail }) {
   const toast = useToast();
 
   const handleSubmit = (event) => {
+    console.log("handler Submit");
     event.preventDefault();
     setLoading(true);
 
@@ -44,20 +46,23 @@ function Login({ setUserDetail }) {
       .then((res) => {
         // use if cookie is not working
         // Cookies.set("access_token", res.data.token);
-        setUserDetail(res.data.user)
+        console.log(res);
+        setLoading(false);
+        setUserDetail(res.data.user);
         toast({
           title: "Login Success",
           description: "Successfully logged in to account",
           status: "success",
           duration: 3000,
           isClosable: true,
-          position: "bottom-right",
+          position: "bottom",
         });
         navigate("/");
       })
       .catch((err) => {
-        setError(err.response.data.message)
-        setLoading(false)
+        console.log(err);
+        setError(err.response.data.message);
+        setLoading(false);
         toast({
           title: "Login Failed",
           description: `${error}`,
@@ -70,77 +75,35 @@ function Login({ setUserDetail }) {
   };
 
   return (
-    <VStack>
+    <>
       <form onSubmit={handleSubmit}>
-        <VStack
-          my="40px"
-          p={8}
-          maxWidth="450px"
-          borderWidth={3}
-          borderRadius={8}
-          boxShadow="lg"
-          divider={<StackDivider borderColor="gray.200" />}
-        >
-          <FormControl isRequired>
-            <HStack mb={5}>
-              <Button
-                colorScheme="teal"
-                variant="outline"
-                fontSize="1.8rem"
-                w="45%"
-                h="3.5rem"
-              >
-                <Link to="/login">SignIn</Link>
-              </Button>
-              <Spacer />
-              <Button
-                colorScheme="teal"
-                variant="outline"
-                fontSize="1.8rem"
-                w="45%"
-                h="3.5rem"
-              >
-                <Link to="/register">SignUp</Link>
-              </Button>
-            </HStack>
+        <VStack divider={<StackDivider borderColor="gray.200" />} spacing={3}>
+          <Stack direction={["column", "row"]}>
+            <FormControl isRequired>
+              <VStack align="flex-start" spacing={0}>
+                <FormLabel>Email</FormLabel>
+                <Input
+                  type="email"
+                  placeholder="Enter your email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+              </VStack>
+            </FormControl>
+            <FormControl isRequired>
+              <VStack align="flex-start" spacing={0}>
+                <FormLabel>Password</FormLabel>
+                <Input
+                  type="password"
+                  placeholder="*******"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+              </VStack>
+            </FormControl>
+          </Stack>
 
-            <HStack my={3}>
-              <FormLabel fontSize="2rem">Email</FormLabel>
-              <Input
-                type="email"
-                placeholder="Enter your email"
-                size="lg"
-                fontSize="1.8rem"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
-            </HStack>
-          </FormControl>
-
-          <FormControl isRequired mt={6}>
-            <HStack mb={4}>
-              <FormLabel fontSize="1.8rem">Password</FormLabel>
-              <Input
-                type="password"
-                placeholder="*******"
-                size="lg"
-                fontSize="2rem"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                
-              />
-            </HStack>
-          </FormControl>
-
-          <Button
-            colorScheme="teal"
-            variant="outline"
-            type="submit"
-            width="full"
-            mt={4}
-            h={16}
-            fontSize="1.8rem"
-          >
+          <Button variant="primary" type="submit" w="full">
             {isLoading ? (
               <CircularProgress isIndeterminate size="24px" color="teal" />
             ) : (
@@ -149,7 +112,7 @@ function Login({ setUserDetail }) {
           </Button>
         </VStack>
       </form>
-    </VStack>
+    </>
   );
 }
 

@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { getSingleProduct } from "../utils/UserLogic";
+import { getSingleProduct, updateReview } from "../utils/UserLogic";
 import {
   Box,
   Button,
   Card,
   CardBody,
+  Container,
   Divider,
   Flex,
   Heading,
@@ -20,6 +21,7 @@ import {
   Stack,
   Text,
   Textarea,
+  useColorModeValue,
   VStack,
 } from "@chakra-ui/react";
 import { AiOutlineArrowLeft, AiOutlineArrowRight } from "react-icons/ai";
@@ -33,31 +35,51 @@ import {
 } from "react-icons/all";
 import Rating from "../components/Rating";
 import DisplayReviews from "../components/DisplayReviews";
+import PostCard from "../components/PostCard";
 
-function SingleProduct({setMyProductsState}) {
-  console.log('single product')
+function SingleProduct({ setMyProductsState }) {
+  const changeReview = (body) => {
+    const { rating, comment, productId } = body;
+    console.log("masterji", rating, comment, productId);
+    updateReview(
+      {
+        rating,
+        comment,
+        productId,
+      },
+      id,
+      setCurrReview
+    );
+  };
+
+  console.log("single product");
   const { id } = useParams();
   const [currProduct, setCurrProduct] = useState(null);
   const [current, setCurrent] = useState(0);
-  const [currReview,setCurrReview] = useState(null)
-
+  const [currReview, setCurrReview] = useState([]);
 
   useEffect(() => {
-    getSingleProduct(id, setCurrProduct,setCurrReview).catch((e) => console.log(e));
+    getSingleProduct(id, setCurrProduct, setCurrReview).catch((e) =>
+      console.log(e)
+    );
   }, []);
 
-  if (!currProduct ) return null;
-  console.log(currProduct);
-  console.log(currReview)
+  if (!currProduct) return null;
+
   return (
-    <>
-      <HStack spacing={20} flexDirection={["column", "column", "row"]} m={3}>
-        <Card w={["100vw", "90vw", "45vw"]}>
+    <Container maxW="container.xl" p={2}>
+      <HStack
+        flexDirection={["column", "column", "row"]}
+        gap={2}
+        spacing={{ md: 10 }}
+      >
+        <Card minW={["90vw", "90vw", "480px"]} p={[1, 2]} bg="whiteAlpha.500">
           <CardBody
             p={0}
             borderRadius="12px"
             position="relative"
             overflow="hidden"
+            m={0}
           >
             <Image
               src={currProduct.images[current].url}
@@ -83,7 +105,7 @@ function SingleProduct({setMyProductsState}) {
             />
           </CardBody>
         </Card>
-        <VStack w={["100vw", "90vw", "45vw"]} alignItems="flex-start" p={5}>
+        <VStack alignItems="flex-start" p={3}>
           <Heading>{currProduct.name}</Heading>
           <Flex alignItems="center" gap={2}>
             <ReactStars
@@ -142,14 +164,22 @@ function SingleProduct({setMyProductsState}) {
               <NumberDecrementStepper />
             </NumberInputStepper>
           </NumberInput>
-          <Button bg="purple" w={["80vw", "80vw", "20vw"]}>
+          <Button variant="secondary" w="full">
             Add to Cart
           </Button>
         </VStack>
       </HStack>
-      <Rating FaStarHalf={FaStarHalf} setMyProductsState={setMyProductsState} id={id} setReview={setCurrReview}/>  
-      <DisplayReviews reviews={currProduct.reviews}  />
-    </>
+      <Rating
+        FaStarHalf={FaStarHalf}
+        setMyProductsState={setMyProductsState}
+        id={id}
+        setCurrReview={setCurrReview}
+        updateReview={changeReview}
+      />
+
+      <DisplayReviews reviews={currReview} />
+      {/* <PostCard/> */}
+    </Container>
   );
 }
 

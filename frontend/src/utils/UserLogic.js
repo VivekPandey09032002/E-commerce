@@ -45,53 +45,52 @@ export const getProducts = async (
   // check if distinctCategory exist or not
   if (distinctCategory.length == 0) {
     const allCategory = [];
-    
+
     products.forEach((product) => {
-      allCategory.push({value : product.category, label : product.category});
+      allCategory.push({ value: product.category, label: product.category });
     });
-    var unique = Array.from(new Set(allCategory.map(JSON.stringify))).map(JSON.parse);
+    var unique = Array.from(new Set(allCategory.map(JSON.stringify))).map(
+      JSON.parse
+    );
     setDistinctCategory(unique);
   }
-
   // check if featuredProduct exists or not
   if (featuredProducts.length == 0) {
     const newFeatureProduct = products.map((product) => {
-      return { url: product.images[0].url , desc : product.description , name : product.name , id : product._id };
+      return {
+        url: product.images[0].url,
+        name: product.name,
+        id: product._id,
+        rating: product.ratings,
+        category: product.category,
+        price: product.price,
+      };
     });
-    setFeaturedProducts(newFeatureProduct.slice(0, 4));
+    setFeaturedProducts(
+      newFeatureProduct.sort(() => 0.5 - Math.random()).slice(0, 3)
+    );
   }
 };
 
+export const getSingleProduct = async (id, setCurProduct, setCurrReview) => {
+  const res = await axios.get("http://localhost:4000/api/v1/products/" + id);
+  setCurProduct(res.data.product);
+  setCurrReview(res.data.product.reviews);
+};
 
-
-export const getSingleProduct = async (id,setCurProduct,setCurrReview)=>{
-  const res = await axios.get("http://localhost:4000/api/v1/products/"+id)
-  setCurProduct(res.data.product)
-  setCurrReview(res.data.reviews)
-}
-
-export const updateReview = async(body) => {
+export const updateReview = async (body, id, setReview) => {
   const instance = axios.create({
     withCredentials: true,
   });
-  try{
-  console.log(body)  
-  const res = await instance.put("http://localhost:4000/api/v1/review",body)
-  // console.log(res.data)
-  }catch(e){
-    console.log(e)
+  try {
+    if (body.length == 0) return;
+    console.log("hello",body.rating,body.comment, body.productId)    
+    const res = await instance.put("http://localhost:4000/api/v1/review", body);
+    const res2 = await axios.get(
+      "http://localhost:4000/api/v1/reviews?id=" + id
+    );
+    setReview(res2.data.reviews);
+  } catch (e) {
+    console.log(e);
   }
-   
-}
-
-
-export const getReview = async(id,setReviews) => {
-  try{
-  const res = await axios.get("http://localhost:4000/api/v1/reviews?id="+id)
-  console.log(res)
-  setReviews(res.data.reviews)
-  }catch(e){
-    console.log(e)
-  }
-  
-}
+};
