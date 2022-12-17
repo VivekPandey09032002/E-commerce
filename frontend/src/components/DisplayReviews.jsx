@@ -1,6 +1,5 @@
 import {
   Box,
-  Divider,
   HStack,
   Icon,
   Spacer,
@@ -8,25 +7,31 @@ import {
   StackDivider,
   Text,
   useColorModeValue,
-  useMediaQuery,
-  VStack,
-} from "@chakra-ui/react";
-import React from "react";
-import { BsPersonCircle } from "react-icons/bs";
-import { FaStarHalf } from "react-icons/fa";
-import ReactStars from "react-rating-stars-component";
-function DisplayReviews({ reviews }) {
-  const bgColor = useColorModeValue("gray.50", "whiteAlpha.50");
+} from "@chakra-ui/react"
+import React from "react"
+import { BsPersonCircle } from "react-icons/bs"
+import { FaStarHalf } from "react-icons/fa"
+import ReactStars from "react-rating-stars-component"
+import { useSelector } from "react-redux"
+import { STATUS } from "../utils/status"
+function DisplayReviews() {
+  const { data: reviews, status } = useSelector((state) => state.reviews)
+  const bgColor = useColorModeValue("gray.50", "whiteAlpha.50")
 
+  if (status == STATUS.LOADING) return <h1>loading</h1>
+  if (status == STATUS.ERROR) return <h1>error</h1>
   return (
     <Stack boxShadow="lg" p={5}>
+      <span style={{ fontSize: "20px" }}>
+        ({reviews.length} customer review)
+      </span>
       {reviews.map((review, ind) => (
         <Box key={ind} boxShadow="lg" p={5} bg={bgColor}>
-          <Stack divider={<StackDivider />} >
+          <Stack divider={<StackDivider />}>
             <HStack spacing={4}>
-              <Icon as={BsPersonCircle} fontSize={30} ></Icon>
+              <Icon as={BsPersonCircle} fontSize={30}></Icon>
               <Text>{review.name}</Text>
-              <Spacer/>
+              <Spacer />
               <Box>
                 <ReactStars
                   count={5}
@@ -45,7 +50,7 @@ function DisplayReviews({ reviews }) {
         </Box>
       ))}
     </Stack>
-  );
+  )
 }
 
-export default DisplayReviews;
+export default DisplayReviews

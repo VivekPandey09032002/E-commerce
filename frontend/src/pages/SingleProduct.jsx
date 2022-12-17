@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react"
 import { NavLink, useParams } from "react-router-dom"
-import { getSingleProduct, updateReview } from "../utils/UserLogic"
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -35,36 +34,27 @@ import {
 } from "react-icons/all"
 import Rating from "../components/Rating"
 import DisplayReviews from "../components/DisplayReviews"
+import { useDispatch, useSelector } from "react-redux"
+import { fetchSingleProduct } from "../store/singleProductSlice"
 
-function SingleProduct({ cart, setCart }) {
-  const changeReview = (body) => {
-    const { rating, comment, productId } = body
-    console.log("masterji", rating, comment, productId)
-    updateReview(
-      {
-        rating,
-        comment,
-        productId,
-      },
-      id,
-      setCurrReview
-    )
-  }
+import { STATUS } from "../utils/status"
+import { add, newItem } from "../store/cartSlice"
+import { fetchReview } from "../store/reviewSlice"
 
-  console.log("single product")
+function SingleProduct() {
+  const dispatch = useDispatch()
   const { id } = useParams()
-  const [currProduct, setCurrProduct] = useState(null)
+  const { data: currProduct, status } = useSelector((state) => (state.singleProduct))
   const [current, setCurrent] = useState(0)
-  const [currReview, setCurrReview] = useState([])
   const [quantity, setQuantity] = useState(1)
-  useEffect(() => {
-    getSingleProduct(id, setCurrProduct, setCurrReview).catch((e) =>
-      console.log(e)
-    )
-  }, [])
 
-  if (!currProduct) return null
-  // console.log(currProduct)
+  useEffect(() => {
+    dispatch(fetchSingleProduct(id))
+    dispatch(fetchReview(id))
+  }, [])
+  if (currProduct.length == 0) return null
+  if (status == STATUS.LOADING) return <h1>Loading</h1>
+  if (status == STATUS.ERROR) return <h1>Error</h1>
   return (
     <Container maxW="container.xl" p={2}>
       <Breadcrumb m={5} fontSize={25}>
@@ -95,7 +85,7 @@ function SingleProduct({ cart, setCart }) {
           >
             <Image
               src={currProduct.images[current].url}
-              alt={currProduct.images[current].desc}
+              alt={currProduct.images[current].public_id}
               w="100%"
               h={{ base: "400px", md: "450px" }}
               transition="all 0.3s"
@@ -125,11 +115,11 @@ function SingleProduct({ cart, setCart }) {
               activeColor="#ffd700"
               size={30}
               halfIcon={<FaStarHalf />}
-              value={currProduct.ratings}
+              value={currProduct.rating}
               isHalf={true}
               edit={false}
             />
-            <span>({currProduct.reviews.length} customer review)</span>
+            
           </Flex>
           <Text as="p" fontSize={20}>
             MRP : {currProduct.price}
@@ -171,7 +161,6 @@ function SingleProduct({ cart, setCart }) {
             max={currProduct.stock}
             value={quantity}
             onChange={(value) => {
-              console.log(value)
               setQuantity(+value)
             }}
           >
@@ -185,22 +174,21 @@ function SingleProduct({ cart, setCart }) {
             variant="secondary"
             w="full"
             onClick={() => {
-              console.log(cart)
-              const filterCart = cart.filter((item) => item.product != id)
-              console.log("filterCart", filterCart)
-              setCart([
-                ...filterCart,
-                {
-                  product: currProduct._id,
-                  name: currProduct.name,
-                  price: currProduct.price,
-                  image: currProduct.images[0].url,
-                  quantity: quantity,
-                  id: cart.length,
-                },
-              ])
-              // localStorage update
-              localStorage.setItem("cart", JSON.stringify(cart))
+              let myCart =  newItem(currProduct,quantity)
+              if (localStorage.getItem("cart") == null) {
+                dispatch(add([myCart]))
+                localStorage.setItem('cart',JSON.stringify([myCart]))
+              }else{
+                let localCart = JSON.parse(localStorage.getItem("cart"))
+
+                localCart = localCart.filter((item) => {
+                  return item.productId != id
+                  })
+                localCart.push(myCart)
+                console.log(localCart)
+                dispatch(add(localCart))
+                localStorage.setItem('cart',JSON.stringify(localCart))
+              }
             }}
           >
             Add to Cart
@@ -208,13 +196,10 @@ function SingleProduct({ cart, setCart }) {
         </VStack>
       </HStack>
       <Rating
-        FaStarHalf={FaStarHalf}
         id={id}
-        setCurrReview={setCurrReview}
-        updateReview={changeReview}
       />
 
-      <DisplayReviews reviews={currReview} />
+      <DisplayReviews />
       {/* <PostCard/> */}
     </Container>
   )

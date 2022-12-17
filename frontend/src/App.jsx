@@ -8,6 +8,7 @@ import Home from "./pages/Home"
 import NavBar from "./components/NavBar"
 import Footer from "./components/Footer"
 import { fetchFeaturedProducts } from "./store/featuredProductSlice"
+import { add } from "./store/cartSlice"
 
 const SingleProduct = React.lazy(() => import("./pages/SingleProduct"))
 const CartPage = React.lazy(() => import("./pages/CartPage"))
@@ -24,14 +25,14 @@ function App() {
   const [userDetail, setUserDetail] = useState({})
   const [cart, setCart] = useState([])
   useEffect(() => {
-    getUser(setUserDetail)
     if (localStorage.getItem("cart")) {
-      setCart(JSON.parse(localStorage.getItem("cart")))
+      dispatch(add(JSON.parse(localStorage.getItem("cart"))))
     }
     dispatch(fetchFeaturedProducts("hello"))
   }, [])
 
   return (
+    <div style={{overflow : "hidden"}}>
     <Suspense fallback="loading....">
       <NavBar
         userDetail={userDetail}
@@ -56,6 +57,7 @@ function App() {
       </Routes>
       <Footer />
     </Suspense>
+    </div>
   )
 }
 
