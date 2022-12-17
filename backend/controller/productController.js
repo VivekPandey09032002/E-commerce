@@ -36,6 +36,50 @@ exports.getAllProducts = catchAsyncError(async (req, res) => {
   });
 });
 
+
+exports.getFeaturedProducts = catchAsyncError(async (req, res) => {
+  // const resultPerPage = 5;
+  // const productCount = await Product.countDocuments();
+  const apiFeature = new ApiFeatures(Product.find(),req.query)
+  // const apiFeature = new ApiFeatures(Product.find(), req.query).search().filter().pagination(resultPerPage);
+  let products = await apiFeature.query;
+  products = products.sort(() => 0.5 - Math.random()).slice(0, 3)
+  
+  if (!products) {
+    return next(new ErrorHandler("Product not found", 404));
+  }
+  res.status(200).json({
+    success: true,
+    products,
+  });
+});
+
+exports.getProductsCategory = catchAsyncError(async (req, res) => {
+  // const resultPerPage = 5;
+  // const productCount = await Product.countDocuments();
+  const apiFeature = new ApiFeatures(Product.find(),req.query)
+  // const apiFeature = new ApiFeatures(Product.find(), req.query).search().filter().pagination(resultPerPage);
+  let products = await apiFeature.query;
+  
+  
+  if (!products) {
+    return next(new ErrorHandler("Category not found", 404));
+  }
+  const allCategory = [];
+
+  products.forEach((product) => {
+    allCategory.push({ value: product.category, label: product.category });
+  });
+  let categories = Array.from(new Set(allCategory.map(JSON.stringify))).map(
+    JSON.parse
+  );
+  res.status(200).json({
+    success: true,
+    categories,
+    categoriesCount : categories.length
+  });
+});
+
 // get product details
 exports.getProductDetails = catchAsyncError(async (req, res, next) => {
   let product = await Product.findById(req.params.id);

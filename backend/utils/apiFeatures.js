@@ -28,6 +28,8 @@ class ApiFeatures {
     }
 
     pagination(resultperPage){
+        // if(this.queryStr.page === undefined)
+        //     return this
         let currentPage = Number(this.queryStr.page) || 1
         //current page -> [1-5], [6-11] etc
         let skip = resultperPage*(currentPage - 1 )
