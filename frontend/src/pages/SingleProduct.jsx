@@ -1,8 +1,10 @@
-import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import { getSingleProduct, updateReview } from "../utils/UserLogic";
+import React, { useEffect, useState } from "react"
+import { NavLink, useParams } from "react-router-dom"
+import { getSingleProduct, updateReview } from "../utils/UserLogic"
 import {
-  Box,
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
   Button,
   Card,
   CardBody,
@@ -20,27 +22,24 @@ import {
   NumberInputStepper,
   Stack,
   Text,
-  Textarea,
-  useColorModeValue,
   VStack,
-} from "@chakra-ui/react";
-import { AiOutlineArrowLeft, AiOutlineArrowRight } from "react-icons/ai";
-import ReactStars from "react-rating-stars-component";
+} from "@chakra-ui/react"
+import { AiOutlineArrowLeft, AiOutlineArrowRight } from "react-icons/ai"
+import ReactStars from "react-rating-stars-component"
 
 import {
   FaMoneyCheckAlt,
   FaStarHalf,
   TbReplace,
   TbTruckDelivery,
-} from "react-icons/all";
-import Rating from "../components/Rating";
-import DisplayReviews from "../components/DisplayReviews";
-import PostCard from "../components/PostCard";
+} from "react-icons/all"
+import Rating from "../components/Rating"
+import DisplayReviews from "../components/DisplayReviews"
 
-function SingleProduct({ setMyProductsState }) {
+function SingleProduct({ cart, setCart }) {
   const changeReview = (body) => {
-    const { rating, comment, productId } = body;
-    console.log("masterji", rating, comment, productId);
+    const { rating, comment, productId } = body
+    console.log("masterji", rating, comment, productId)
     updateReview(
       {
         rating,
@@ -49,25 +48,38 @@ function SingleProduct({ setMyProductsState }) {
       },
       id,
       setCurrReview
-    );
-  };
+    )
+  }
 
-  console.log("single product");
-  const { id } = useParams();
-  const [currProduct, setCurrProduct] = useState(null);
-  const [current, setCurrent] = useState(0);
-  const [currReview, setCurrReview] = useState([]);
-
+  console.log("single product")
+  const { id } = useParams()
+  const [currProduct, setCurrProduct] = useState(null)
+  const [current, setCurrent] = useState(0)
+  const [currReview, setCurrReview] = useState([])
+  const [quantity, setQuantity] = useState(1)
   useEffect(() => {
     getSingleProduct(id, setCurrProduct, setCurrReview).catch((e) =>
       console.log(e)
-    );
-  }, []);
+    )
+  }, [])
 
-  if (!currProduct) return null;
-
+  if (!currProduct) return null
+  // console.log(currProduct)
   return (
     <Container maxW="container.xl" p={2}>
+      <Breadcrumb m={5} fontSize={25}>
+        <BreadcrumbItem>
+          <BreadcrumbLink as={NavLink} to="/">
+            Home
+          </BreadcrumbLink>
+        </BreadcrumbItem>
+
+        <BreadcrumbItem isCurrentPage>
+          <BreadcrumbLink as={NavLink} to="/products">
+            products
+          </BreadcrumbLink>
+        </BreadcrumbItem>
+      </Breadcrumb>
       <HStack
         flexDirection={["column", "column", "row"]}
         gap={2}
@@ -94,13 +106,13 @@ function SingleProduct({ setMyProductsState }) {
               onClick={(e) => {
                 setCurrent(
                   current > 0 ? current - 1 : currProduct.images.length - 1
-                );
+                )
               }}
             />
             <AiOutlineArrowRight
               className="right-arrow"
               onClick={(e) => {
-                setCurrent((current + 1) % currProduct.images.length);
+                setCurrent((current + 1) % currProduct.images.length)
               }}
             />
           </CardBody>
@@ -157,6 +169,11 @@ function SingleProduct({ setMyProductsState }) {
             defaultValue={1}
             min={1}
             max={currProduct.stock}
+            value={quantity}
+            onChange={(value) => {
+              console.log(value)
+              setQuantity(+value)
+            }}
           >
             <NumberInputField />
             <NumberInputStepper>
@@ -164,14 +181,34 @@ function SingleProduct({ setMyProductsState }) {
               <NumberDecrementStepper />
             </NumberInputStepper>
           </NumberInput>
-          <Button variant="secondary" w="full">
+          <Button
+            variant="secondary"
+            w="full"
+            onClick={() => {
+              console.log(cart)
+              const filterCart = cart.filter((item) => item.product != id)
+              console.log("filterCart", filterCart)
+              setCart([
+                ...filterCart,
+                {
+                  product: currProduct._id,
+                  name: currProduct.name,
+                  price: currProduct.price,
+                  image: currProduct.images[0].url,
+                  quantity: quantity,
+                  id: cart.length,
+                },
+              ])
+              // localStorage update
+              localStorage.setItem("cart", JSON.stringify(cart))
+            }}
+          >
             Add to Cart
           </Button>
         </VStack>
       </HStack>
       <Rating
         FaStarHalf={FaStarHalf}
-        setMyProductsState={setMyProductsState}
         id={id}
         setCurrReview={setCurrReview}
         updateReview={changeReview}
@@ -180,7 +217,7 @@ function SingleProduct({ setMyProductsState }) {
       <DisplayReviews reviews={currReview} />
       {/* <PostCard/> */}
     </Container>
-  );
+  )
 }
 
-export default SingleProduct;
+export default SingleProduct

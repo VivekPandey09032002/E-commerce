@@ -1,57 +1,48 @@
 import {
   Avatar,
+  Box,
   Button,
   Container,
   Drawer,
-  DrawerBody,
   DrawerCloseButton,
   DrawerContent,
-  DrawerFooter,
-  DrawerHeader,
   DrawerOverlay,
   Flex,
-  HStack,
   IconButton,
-  Input,
   Menu,
   MenuButton,
   MenuItem,
   MenuList,
   useColorMode,
-  useColorModeValue,
   useDisclosure,
 } from "@chakra-ui/react";
-import React, { useState } from "react";
-import { FaBars } from "react-icons/fa";
+import React from "react";
+import { FaBars, FaCartPlus } from "react-icons/fa";
+import { MdDarkMode, MdLightMode } from "react-icons/md";
+import { useNavigate } from "react-router-dom";
 import CustomDrawer from "./CustomDrawer";
 
-const NavBar = ({userDetail , setUserDetail }) => {
+const NavBar = ({ userDetail, setUserDetail, cart, setCart }) => {
+  const  navigate = useNavigate()
   const { isOpen, onOpen, onClose } = useDisclosure();
   const btnRef = React.useRef();
-  const { colorMode, toggleColorMode } = useColorMode()
+  const { colorMode, toggleColorMode } = useColorMode();
   return (
     <>
       <Container maxW="container.xl">
-      <Drawer
-        isOpen={isOpen}
-        placement='left'
-        onClose={onClose}
-        finalFocusRef={btnRef}
-        size='lg'
-      >
-        <DrawerOverlay />
-        <DrawerContent>
-          <DrawerCloseButton />
-
-          <CustomDrawer setUserDetail={setUserDetail} />
-          {/* <DrawerFooter>
-            <Button variant="outline" mr={3} onClick={onClose}>
-              Cancel
-            </Button>
-            <Button colorScheme="blue">Save</Button>
-          </DrawerFooter> */}
-        </DrawerContent>
-      </Drawer>
+        <Drawer
+          isOpen={isOpen}
+          placement="left"
+          onClose={onClose}
+          finalFocusRef={btnRef}
+          size="lg"
+        >
+          <DrawerOverlay />
+          <DrawerContent>
+            <DrawerCloseButton />
+            <CustomDrawer setUserDetail={setUserDetail} />
+          </DrawerContent>
+        </Drawer>
       </Container>
       <Flex
         h="75px"
@@ -70,16 +61,34 @@ const NavBar = ({userDetail , setUserDetail }) => {
         >
           <FaBars />
         </IconButton>
-        <Button onClick={toggleColorMode}>toggle</Button>
-        <Menu>
-          <MenuButton>
-            <Avatar />
-          </MenuButton>
-          <MenuList>
-            <MenuItem>Profile</MenuItem>
-            <MenuItem>Setting</MenuItem>
-          </MenuList>
-        </Menu>
+
+        <Flex align="center" position="relative">
+          <Menu>
+            <MenuButton>
+              <Avatar name={userDetail.name} />
+            </MenuButton>
+            <MenuList>
+              <MenuItem>Profile</MenuItem>
+              <MenuItem>Setting</MenuItem>
+            </MenuList>
+          </Menu>
+          <IconButton onClick={toggleColorMode} fontSize={30} m={3}>
+            {colorMode === "dark" ? <MdLightMode /> : <MdDarkMode />}
+          </IconButton>
+          <IconButton fontSize={30} m={3} onClick={() => {navigate("/cart")}}>
+            <FaCartPlus />
+          </IconButton>
+          <Box
+            position="absolute"
+            right={3}
+            top={-1}
+            fontSize={20}
+            fontWeight="bold"
+            color="red.500"
+          >
+            {cart.length}
+          </Box>
+        </Flex>
         {/* <Popover>
             <PopoverTrigger>
               <Avatar />

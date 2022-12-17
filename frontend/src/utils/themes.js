@@ -3,14 +3,14 @@ import {
   theme as base,
   withDefaultColorScheme,
   withDefaultVariant,
-} from "@chakra-ui/react";
-import { mode } from "@chakra-ui/theme-tools";
+} from "@chakra-ui/react"
+import { mode } from "@chakra-ui/theme-tools"
 const replaceExsiting = {
   variants: {
     filled: {
       field: {
         _focus: {
-          borderColor: "brand.500",
+          borderColor: "blue.300",
         },
       },
     },
@@ -22,7 +22,7 @@ const replaceExsiting = {
       },
     },
   },
-};
+}
 
 const theme = extendTheme(
   {
@@ -95,7 +95,10 @@ const theme = extendTheme(
             backgroundColor: mode("purpleTheme.200", "purpleTheme.200")(props),
             color: mode("black", "white")(props),
             _hover: {
-              backgroundColor: mode("purpleTheme.300", "purpleTheme.300")(props),
+              backgroundColor: mode(
+                "purpleTheme.300",
+                "purpleTheme.300"
+              )(props),
               color: mode("white", "black")(props),
             },
           }),
@@ -136,6 +139,6 @@ const theme = extendTheme(
     variant: "filled",
     components: ["Input", "Select", "Textarea"],
   })
-);
+)
 
-export default theme;
+export default theme

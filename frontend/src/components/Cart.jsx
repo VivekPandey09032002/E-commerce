@@ -1,6 +1,7 @@
 import {
   AspectRatio,
   Button,
+  Container,
   Divider,
   Heading,
   HStack,
@@ -13,19 +14,13 @@ import {
 } from "@chakra-ui/react";
 import React from "react";
 
-const Cart = () => {
+const Cart = ({ cart, setCart }) => {
+  console.log(cart)
   const { toggleColorMode } = useColorMode();
   const bgColor = useColorModeValue("gray.50", "whiteAlpha.50");
   const textColor = useColorModeValue("gray.600", "whiteAlpha.600");
   return (
-    <VStack
-      w="full"
-      h="full"
-      p={10}
-      spacing={6}
-      align="flex-start"
-      bg={bgColor}
-    >
+    <VStack w="full" h="full" p={3} spacing={6} align="flex-start" bg={bgColor}>
       <VStack alignItems="flex-start" spacing={3}>
         <Heading size="2xl">Your cart</Heading>
         <Text>
@@ -39,26 +34,31 @@ const Cart = () => {
           </Button>
         </Text>
       </VStack>
-      <HStack spacing={6} alignItems="center" w="full">
-        <AspectRatio ratio={1} w={24}>
-          <Image src="/skateboard.jpeg" alt="Skateboard" />
-        </AspectRatio>
-        <Stack
-          spacing={0}
-          w="full"
-          direction="row"
-          justifyContent="space-between"
-          alignItems="center"
-        >
-          <VStack w="full" spacing={0} alignItems="flex-start">
-            <Heading size="md">Penny board</Heading>
-            <Text color={textColor}>PNYCOMP27541</Text>
-          </VStack>
-          <Heading size="sm" textAlign="end">
-            $119.00
-          </Heading>
-        </Stack>
-      </HStack>
+      <VStack spacing={4} alignItems="stretch" w="full" overflowY="auto">
+        {cart.map((item) => (
+          <HStack key={item.id} spacing={6} alignItems="center" w="full">
+            <AspectRatio ratio={1} w={24}>
+              <Image src={item.image} alt="Skateboard" />
+            </AspectRatio>
+            <Stack
+              spacing={0}
+              w="full"
+              direction="row"
+              justifyContent="space-between"
+              alignItems="center"
+            >
+              <VStack w="full" spacing={0} alignItems="flex-start">
+                <Heading size="md">{item.name.substring(0, 12)}</Heading>
+                <Text color={textColor}>{item.product}</Text>
+              </VStack>
+              <Heading size="sm" textAlign="end" p={2}>
+               ${item.price}
+              </Heading>
+            </Stack>
+          </HStack>
+        ))}
+      </VStack>
+
       <VStack spacing={4} alignItems="stretch" w="full">
         <HStack justifyContent="space-between">
           <Text color={textColor}>Subtotal</Text>
