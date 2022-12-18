@@ -1,7 +1,12 @@
 import {
+  Alert,
+  AlertDescription,
+  AlertIcon,
+  AlertTitle,
   Box,
   HStack,
   Icon,
+  Progress,
   Spacer,
   Stack,
   StackDivider,
@@ -18,8 +23,18 @@ function DisplayReviews() {
   const { data: reviews, status } = useSelector((state) => state.reviews)
   const bgColor = useColorModeValue("gray.50", "whiteAlpha.50")
 
-  if (status == STATUS.LOADING) return <h1>loading</h1>
-  if (status == STATUS.ERROR) return <h1>error</h1>
+  if (status == STATUS.LOADING) return (<Progress size='xs' isIndeterminate />)
+  if (status == STATUS.ERROR) {
+    return (
+      <Alert status="error">
+        <AlertIcon />
+        <AlertTitle>Login to your accound</AlertTitle>
+        <AlertDescription>
+          You need to login in order to update or create the reviews!!!
+        </AlertDescription>
+      </Alert>
+    )
+  }
   return (
     <Stack boxShadow="lg" p={5}>
       <span style={{ fontSize: "20px" }}>

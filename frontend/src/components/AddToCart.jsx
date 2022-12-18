@@ -4,6 +4,8 @@ import { useState } from "react"
 import { useDispatch } from "react-redux"
 import { add, newItem } from "../store/cartSlice"
 
+import {calculatePrice} from '../utils/UserLogic'
+
 function AddToCart({currProduct,id}) {
   const dispatch =  useDispatch()
   const [quantity,setQuantity] = useState(1)
@@ -38,19 +40,19 @@ function AddToCart({currProduct,id}) {
         w="full"
         onClick={() => {
           let myCart = newItem(currProduct, quantity)
-          if (localStorage.getItem("cart") == null) {
-            dispatch(add([myCart]))
+          if (localStorage.getItem("cart") == null  ) {
+            const price = calculatePrice([myCart])
+            dispatch(add({data : [myCart], price  }))
             localStorage.setItem("cart", JSON.stringify([myCart]))
           } else {
             let localCart = JSON.parse(localStorage.getItem("cart"))
 
             localCart = localCart.filter((item) => {
-              console.log(item.product, id)
               return item.productId != id
             })
             localCart.push(myCart)
-            console.log(localCart)
-            dispatch(add(localCart))
+            const price = calculatePrice(localCart)
+            dispatch(add({data : localCart, price}))
             localStorage.setItem("cart", JSON.stringify(localCart))
           }
         }}

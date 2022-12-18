@@ -50,6 +50,6 @@ export const updateReview = createAsyncThunk("review/update", async (body) => {
     withCredentials: true,
   })
   await instance.put("http://localhost:4000/api/v1/review",body)
-  const res = await axios.get(`http://localhost:4000/api/v1/reviews?id=${body.productId}`)
+  const res = await axios.get(`http://localhost:4000/api/v1/reviews?id=${body.productId}`).catch( (e) => console.log(e) )
   return res.data.reviews
 })

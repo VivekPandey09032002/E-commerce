@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react"
 import { NavLink, useParams } from "react-router-dom"
 import {
+  Alert,
+  AlertIcon,
+  AlertTitle,
   Breadcrumb,
   BreadcrumbItem,
   BreadcrumbLink,
-  Button,
   Card,
   CardBody,
   Container,
@@ -14,12 +16,7 @@ import {
   HStack,
   Icon,
   Image,
-  NumberDecrementStepper,
-  NumberIncrementStepper,
-  NumberInput,
-  NumberInputField,
-  NumberInputStepper,
-  Stack,
+  Progress,
   Text,
   VStack,
 } from "@chakra-ui/react"
@@ -38,23 +35,34 @@ import { useDispatch, useSelector } from "react-redux"
 import { fetchSingleProduct } from "../store/singleProductSlice"
 
 import { STATUS } from "../utils/status"
-import { add, newItem } from "../store/cartSlice"
 import { fetchReview } from "../store/reviewSlice"
+import AddToCart from "../components/AddToCart"
 
 function SingleProduct() {
   const dispatch = useDispatch()
   const { id } = useParams()
-  const { data: currProduct, status } = useSelector((state) => (state.singleProduct))
+  const { data: currProduct, status } = useSelector(
+    (state) => state.singleProduct
+  )
   const [current, setCurrent] = useState(0)
-  const [quantity, setQuantity] = useState(1)
 
   useEffect(() => {
     dispatch(fetchSingleProduct(id))
     dispatch(fetchReview(id))
   }, [])
   if (currProduct.length == 0) return null
-  if (status == STATUS.LOADING) return <h1>Loading</h1>
-  if (status == STATUS.ERROR) return <h1>Error</h1>
+  if (status == STATUS.LOADING) return <Progress size="xs" isIndeterminate />
+  if (status == STATUS.ERROR) {
+    return (
+      <Alert status="error">
+        <AlertIcon />
+        <AlertTitle>Something went Wrong 500:</AlertTitle>
+        <AlertDescription>
+          Try Refresh the page, Sorry for inconvience!!!
+        </AlertDescription>
+      </Alert>
+    )
+  }
   return (
     <Container maxW="container.xl" p={2}>
       <Breadcrumb m={5} fontSize={25}>
@@ -119,7 +127,6 @@ function SingleProduct() {
               isHalf={true}
               edit={false}
             />
-            
           </Flex>
           <Text as="p" fontSize={20}>
             MRP : {currProduct.price}
@@ -146,58 +153,10 @@ function SingleProduct() {
             </VStack>
           </HStack>
           <Divider />
-          <Stack spacing={1}>
-            <Text>
-              Available : {currProduct.stock > 0 ? "In Stock" : "Out Of Stock"}
-            </Text>
-            <Text>Current Stock : {currProduct.stock}</Text>
-          </Stack>
-          <Divider />
-          <NumberInput
-            size="lg"
-            maxW={32}
-            defaultValue={1}
-            min={1}
-            max={currProduct.stock}
-            value={quantity}
-            onChange={(value) => {
-              setQuantity(+value)
-            }}
-          >
-            <NumberInputField />
-            <NumberInputStepper>
-              <NumberIncrementStepper />
-              <NumberDecrementStepper />
-            </NumberInputStepper>
-          </NumberInput>
-          <Button
-            variant="secondary"
-            w="full"
-            onClick={() => {
-              let myCart =  newItem(currProduct,quantity)
-              if (localStorage.getItem("cart") == null) {
-                dispatch(add([myCart]))
-                localStorage.setItem('cart',JSON.stringify([myCart]))
-              }else{
-                let localCart = JSON.parse(localStorage.getItem("cart"))
-
-                localCart = localCart.filter((item) => {
-                  return item.productId != id
-                  })
-                localCart.push(myCart)
-                console.log(localCart)
-                dispatch(add(localCart))
-                localStorage.setItem('cart',JSON.stringify(localCart))
-              }
-            }}
-          >
-            Add to Cart
-          </Button>
+          <AddToCart currProduct={currProduct} id={id} />
         </VStack>
       </HStack>
-      <Rating
-        id={id}
-      />
+      <Rating id={id} />
 
       <DisplayReviews />
       {/* <PostCard/> */}

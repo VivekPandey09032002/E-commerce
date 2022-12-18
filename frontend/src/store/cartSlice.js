@@ -1,6 +1,10 @@
-import {createSlice, current} from '@reduxjs/toolkit'
+import {createSlice} from '@reduxjs/toolkit'
 
-const initialState = []
+const initialState = {
+    data : [],
+    price : 0,
+}
+
 
 const cartSlice = createSlice({
     name : 'cart',
@@ -10,12 +14,15 @@ const cartSlice = createSlice({
             return action.payload
         },
         remove(state,action){
-            return [...newState]
+            return action.payload
+        },
+        removeAll(state,action){
+            return {data : [], price : 0}
         }
     }
 })
 
-export const {add,remove} = cartSlice.actions
+export const {add,remove,removeAll} = cartSlice.actions
 export default cartSlice.reducer
 
 

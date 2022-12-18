@@ -19,14 +19,17 @@ import {
 import React from "react";
 import { FaBars, FaCartPlus } from "react-icons/fa";
 import { MdDarkMode, MdLightMode } from "react-icons/md";
+import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import CustomDrawer from "./CustomDrawer";
 
-const NavBar = ({ userDetail, setUserDetail, cart, setCart }) => {
+const NavBar = ({userDetail,setUserDetail}) => {
   const  navigate = useNavigate()
+  const {data : cart} = useSelector(state => state.cart)
   const { isOpen, onOpen, onClose } = useDisclosure();
   const btnRef = React.useRef();
   const { colorMode, toggleColorMode } = useColorMode();
+  if(cart== null) return null
   return (
     <>
       <Container maxW="container.xl">

@@ -6,6 +6,7 @@ import productReducer from './productSlice'
 import productCategoriesReducer from './productCategorySlice'
 import singleProductReducer from './singleProductSlice'
 import reviewReducer from './reviewSlice'
+import shippingSliceReducer from './shippingSlice'
 
 const store = configureStore({
     reducer : {
@@ -14,7 +15,8 @@ const store = configureStore({
         featuredProduct : featuredProductReducer,
         productCategories : productCategoriesReducer,
         singleProduct : singleProductReducer,
-        reviews : reviewReducer
+        reviews : reviewReducer,
+        shipping : shippingSliceReducer 
     }
 })
 
