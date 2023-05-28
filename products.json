@@ -1,0 +1,12 @@
+
+    {
+        "name" : "apple",
+        "price" : 120000,
+        "description" : "iphone 14",
+        "category" : "mobile",
+        "images" : {
+            "public_id" : "sample image",
+            "url" : "https://ibb.co/q5J1QNv"
+        }
+    }
+

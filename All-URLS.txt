@@ -1,0 +1,62 @@
+User-Permission 
+***************
+create new order -> http://localhost:4000/api/v1/order/new
+get single order -> http://localhost:4000/api/v1/order/:id
+get user order   -> http://localhost:4000/api/v1/orders/my
+
+
+register -> http://localhost:4000/api/v1/register
+sign in -> http://localhost:4000/api/v1/login
+sign up -> http://localhost:4000/api/v1/logout
+update user detail -> http://localhost:4000/api/v1/me/update
+send reset password mail -> http://localhost:4000/api/v1/password/forgot
+get user detail -> http://localhost:4000/api/v1/me
+update user password -> http://localhost:4000/api/v1/password/update
+
+
+get all products -> http://localhost:4000/api/v1/products (also filter etcs ask me)
+
+get single product -> http://localhost:4000/api/v1/products/:product_id
+
+add review -> http://localhost:4000/api/v1/review
+
+get product review -> http://localhost:4000/api/v1/reviews?id=user_id
+http://localhost:4000/api/v1/reviews?id=user_id&productId=product_id
+
+***************
+
+
+
+
+reset password link -> http://localhost:4000/api/v1/password/reset/:user_id
+
+
+
+
+
+
+
+Admin-Permission
+****************
+
+
+get all order -> http://localhost:4000/api/v1/admin/orders
+update order status -> http://localhost:4000/api/v1/admin/order/:id
+delete order -> http://localhost:4000/api/v1/admin/order/:id
+
+
+update user status -> http://localhost:4000/api/v1/admin/user/:user_id
+delete user -> http://localhost:4000/api/v1/admin/user/:user_id
+get all user -> http://localhost:4000/api/v1/admin/users
+get single user -> http://localhost:4000/api/v1/admin/user/:user_id
+
+
+
+create products -> http://localhost:4000/api/v1/admin/products/new
+delete product -> http://localhost:4000/api/v1/admin/products/:product_id
+update product -> http://localhost:4000/api/v1/admin/products/:product_id
+
+
+
+
+****************
